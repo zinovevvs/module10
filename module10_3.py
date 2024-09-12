@@ -17,7 +17,7 @@ class Bank:
 
                 # Проверка условия, если баланс >= 500
                 if self.balance >= 500 and not self.lock.locked():
-                    self.lock.release()  # Разблокируем замок при достаточном балансе
+                    self.lock.release()  # Разблокировка замка при достаточном балансе
 
             time.sleep(0.001)  # Имитация времени выполнения операции
 
@@ -33,15 +33,15 @@ class Bank:
                     print(f"Снятие: {amount}. Баланс: {self.balance}")
             else:
                 print("Запрос отклонён, недостаточно средств")
-                self.lock.acquire()  # Блокируем поток при недостаточном балансе
+                self.lock.acquire()  # Блокирую поток при недостаточном балансе
 
             time.sleep(0.001)  # Имитация времени выполнения операции
 
 
-# Создание объекта банка
+# Создаю объект банка
 bk = Bank()
 
-# Создание потоков для методов deposit и take
+# Создаю поток для методов deposit и take
 th1 = threading.Thread(target=Bank.deposit, args=(bk,))
 th2 = threading.Thread(target=Bank.take, args=(bk,))
 
