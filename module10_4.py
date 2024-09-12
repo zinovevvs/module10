@@ -29,12 +29,12 @@ class Cafe:
             # Поиск свободного стола
             for table in self.tables:
                 if table.guest is None:
-                    table.guest = guest  # Садим гостя за стол
-                    guest.start()  # Запускаем поток гостя
+                    table.guest = guest  # гость за столом
+                    guest.start()  # запуск потока гостя
                     print(f"{guest.name} сел(-а) за стол номер {table.number}")
                     break
             else:
-                self.queue.put(guest)  # Если стола нет, помещаем в очередь
+                self.queue.put(guest)  # Если стола нет, помещаю в очередь
                 print(f"{guest.name} в очереди")
 
     def discuss_guests(self):
@@ -43,33 +43,27 @@ class Cafe:
                 if table.guest is not None and not table.guest.is_alive():
                     print(f"{table.guest.name} покушал(-а) и ушёл(ушла)")
                     print(f"Стол номер {table.number} свободен")
-                    table.guest = None  # Освобождаем стол
+                    table.guest = None  # Освобождаю стол
 
                     if not self.queue.empty():  # Если очередь не пуста
-                        next_guest = self.queue.get()  # Берем следующего из очереди
+                        next_guest = self.queue.get()  # Беру следующего из очереди
                         table.guest = next_guest
                         next_guest.start()
                         print(f"{next_guest.name} вышел(-ла) из очереди и сел(-а) за стол номер {table.number}")
 
 
-# Создание столов
 tables = [Table(number) for number in range(1, 6)]
 
-# Имена гостей
 guests_names = [
     'Maria', 'Oleg', 'Vakhtang', 'Sergey', 'Darya', 'Arman',
     'Vitoria', 'Nikita', 'Galina', 'Pavel', 'Ilya', 'Alexandra'
 ]
 
-# Создание гостей
 guests = [Guest(name) for name in guests_names]
 
-# Заполнение кафе столами
 cafe = Cafe(*tables)
 
-# Приём гостей
 cafe.guest_arrival(*guests)
 
-# Обслуживание гостей
 cafe.discuss_guests()
 
