@@ -11,15 +11,13 @@ class Bank:
     def deposit(self):
         for _ in range(100):
             amount = random.randint(50, 500)  # Случайное значение для пополнения
-            with self.lock:  # Блокировка при изменении баланса
-                self.balance += amount
-                print(f"Пополнение: {amount}. Баланс: {self.balance}")
 
-                # Проверка условия, если баланс >= 500
-                if self.balance >= 500 and not self.lock.locked():
-                    self.lock.release()  # Разблокировка замка при достаточном балансе
-
-            time.sleep(0.001)  # Имитация времени выполнения операции
+        if self.balance >= 500 and self.lock.locked():
+            self.lock.release()
+        with self.lock:
+            self.balance += amount
+            print(f"Пополнение: {amount}. Баланс: {self.balance}")
+            time.sleep(0.001)
 
     def take(self):
         for _ in range(100):
@@ -33,15 +31,15 @@ class Bank:
                     print(f"Снятие: {amount}. Баланс: {self.balance}")
             else:
                 print("Запрос отклонён, недостаточно средств")
-                self.lock.acquire()  # Блокирую поток при недостаточном балансе
+                self.lock.acquire()  # Блокируем поток при недостаточном балансе
 
             time.sleep(0.001)  # Имитация времени выполнения операции
 
 
-# Создаю объект банка
+# Создание объекта банка
 bk = Bank()
 
-# Создаю поток для методов deposit и take
+# Создание потоков для методов deposit и take
 th1 = threading.Thread(target=Bank.deposit, args=(bk,))
 th2 = threading.Thread(target=Bank.take, args=(bk,))
 
